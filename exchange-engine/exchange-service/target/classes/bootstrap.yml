@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: exchange-service
+  cloud:  # nacos地址
+    nacos:
+      server-addr: nacos-server:8848
+      config:
+        file-extension: yaml
+    stream:
+      rocketmq:
+        binder:
+          name-server: rocket-server:9876  #/RocketMQ Message hasn't been sent
+        binders:
+          order_out: {consumer.orderly: true}
+      bindings:
+        order_out: {destination: order_in, content-type: application/plain}
+# 拉取的配置文件的dataID =  exchange-service-dev.yaml
+  profiles:
+    active: dev
