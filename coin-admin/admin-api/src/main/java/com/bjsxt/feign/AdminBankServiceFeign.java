@@ -9,7 +9,6 @@ import java.util.List;
 
 @FeignClient(name = "admin-service",path = "/adminBanks",configuration = OAuth2FeignConfig.class)
 public interface AdminBankServiceFeign {
-
     @GetMapping("/list")
     List<AdminBankDto> getAllAdminBanks() ;
 }
