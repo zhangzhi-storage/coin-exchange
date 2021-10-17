@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @ApiModel(value = "银行卡的参数")
 public class AdminBankDto {
-
     @ApiModelProperty(value = "开户行的人名称")
     private String name ;
 
