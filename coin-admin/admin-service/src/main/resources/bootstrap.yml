@@ -1,9 +1,9 @@
 spring:
   application:
     name: admin-service
-  cloud:  # nacos地址
+  cloud: # nacos地址
     nacos:
-      server-addr: nacos-server:8848
+      server-addr: 47.119.139.32:8848
       config:
         file-extension: yaml
   profiles:

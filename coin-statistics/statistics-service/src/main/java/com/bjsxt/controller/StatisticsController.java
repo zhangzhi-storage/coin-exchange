@@ -8,6 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/statistics")
 public class StatisticsController {
 
-//StatisticsController
-    public R<Page<Coin>>
+
 }

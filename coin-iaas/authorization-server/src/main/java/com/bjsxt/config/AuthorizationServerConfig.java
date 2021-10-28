@@ -50,8 +50,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .secret(passwordEncoder.encode("inside-secret"))
                 .authorizedGrantTypes("client_credentials")
                 .scopes("all")
-                .accessTokenValiditySeconds(Integer.MAX_VALUE) ;
-               ;
+                .accessTokenValiditySeconds(7*24*36000);
         super.configure(clients);
     }
 

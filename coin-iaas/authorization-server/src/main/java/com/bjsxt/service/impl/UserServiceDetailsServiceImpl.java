@@ -101,7 +101,7 @@ public class UserServiceDetailsServiceImpl implements UserDetailsService {
                 return new User(   // 3 封装成一个UserDetails对象，返回
                         String.valueOf(id), //使用id->username
                         password,
-                        status == 1,
+                        status==1,
                         true,
                         true,
                         true,
