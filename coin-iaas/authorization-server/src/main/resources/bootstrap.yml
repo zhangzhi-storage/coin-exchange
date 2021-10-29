@@ -1,0 +1,16 @@
+server:
+  port: 9999
+spring:
+  application:
+    name: authorization-service
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: 47.119.139.32:8848
+      config:
+        file-extension: yaml
+#  redis:
+#    host: redis-server
+#    port: 6380
+#    password: Ltd3411??
