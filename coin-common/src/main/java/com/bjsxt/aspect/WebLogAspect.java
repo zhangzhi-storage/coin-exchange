@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import com.alibaba.fastjson.JSON;
 import com.bjsxt.model.WebLog;
+import com.bjsxt.util.IpUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -70,7 +71,7 @@ public class WebLogAspect {
         webLog.setUrl(url);
         webLog.setBasePath(StrUtil.removeSuffix(url, URLUtil.url(url).getPath())); // http://ip:port/
         webLog.setUsername(authentication==null ? "anonymous":authentication.getPrincipal().toString()); // 获取用户的id
-        webLog.setIp(request.getRemoteAddr()); // TODO 获取ip 地址
+        webLog.setIp(IpUtil.getIpAddr(request));
 
 
         // 获取方法

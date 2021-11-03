@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -166,6 +169,11 @@ public class UserServiceDetailsServiceImpl implements UserDetailsService {
         }, username, username);
     }
 
+    public static void main(String[] args) {
+        String hashpw = BCrypt.hashpw("123456", BCrypt.gensalt());
+        System.out.println(hashpw);
+
+    }
 
 }
 
