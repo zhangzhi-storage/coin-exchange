@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "交易系统的测试")
 public class TestController {
 
+
     @GetMapping("/test")
     @ApiOperation(value = "交易系统测试")
     public R<String> test(){
