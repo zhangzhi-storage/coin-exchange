@@ -18,16 +18,15 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-//@Component
+@Component
 @Aspect
 @Order(2)
 @Slf4j
@@ -61,6 +60,8 @@ public class WebLogAdminAspect {
         Object result = null ;
         WebLog webLog = new WebLog();
        long start = System.currentTimeMillis() ;
+       List<String> stringList=new ArrayList<>();
+
 
        // 执行方法的真实调用
         result = proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs());
