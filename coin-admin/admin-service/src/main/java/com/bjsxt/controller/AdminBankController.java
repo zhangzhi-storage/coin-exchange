@@ -2,13 +2,11 @@ package com.bjsxt.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.bjsxt.constant.Constants;
 import com.bjsxt.domain.AdminBank;
 import com.bjsxt.dto.AdminBankDto;
 import com.bjsxt.feign.AdminBankServiceFeign;
 import com.bjsxt.model.R;
 import com.bjsxt.service.AdminBankService;
-import com.bjsxt.util.LogUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,7 +38,6 @@ public class AdminBankController  implements AdminBankServiceFeign {
     })
     @PreAuthorize("hasAuthority('admin_bank_query')")
     public R<Page<AdminBank>> findByPage(@ApiIgnore Page<AdminBank> page , String bankCard){
-        LogUtils.sendLogMessage(Constants.TOPIC_ITEM_CONSUMER,"查询银行卡信息");
         Page<AdminBank> adminBankPage = adminBankService.findByPage(page, bankCard) ;
         return R.ok(adminBankPage) ;
     }

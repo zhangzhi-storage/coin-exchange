@@ -1,24 +1,31 @@
 package com.bjsxt.util;
 
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import javax.annotation.Resource;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
-public class LogUtils {
+@Slf4j
+public class LogUtil<T> {
+    @Value("${kafka.topic}")
+    public String kafkaTopic;
+
     @Autowired
-    private static KafkaTemplate<String,String> kafkaTemplate;
-    public static void sendLogMessage(String topic,String msg){
-        ExecutorService threadPool = Executors.newFixedThreadPool(20);
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
+    private  KafkaTemplate<String,Object> kafkaTemplate;
+    public void sendLogMessage(T obj){
+        String jsonObj = JSON.toJSONString(obj);
+        log.info("------------ message = {}", jsonObj);
+
                 // 发送消息
                 ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(kafkaTopic, jsonObj);
                 future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
@@ -35,6 +42,6 @@ public class LogUtils {
                     }
                 });
             }
-        });
-    }
+
+
 }

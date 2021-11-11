@@ -6,8 +6,8 @@ spring:
       retries: 0
       batch-size: 16384 #每次批量发送消息的数量
       buffer-memory: 33554432
-      key-serializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-deserializer: org.apache.kafka.common.serialization.StringSerializer
     bootstrap-servers: 192.168.56.106:9092
   profiles:
     active: dev
@@ -17,3 +17,5 @@ spring:
       config:
         file-extension: yaml
 # 拉取的配置文件的dataID =  admin-service-dev.yaml
+kafka:
+  topic: admin_serivice_log

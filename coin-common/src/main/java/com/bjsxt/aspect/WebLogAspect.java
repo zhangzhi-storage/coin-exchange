@@ -3,15 +3,17 @@ package com.bjsxt.aspect;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.bjsxt.model.WebLog;
 import com.bjsxt.util.IpUtil;
+import com.bjsxt.util.LogUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
@@ -22,15 +24,19 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-//@Component
+@Component
 @Aspect
 @Order(1)
 @Slf4j
 public class WebLogAspect {
-
+    @Autowired
+    private LogUtil<JSONObject> kafkaSender;
     /**
      * 日志记录：
      *  环绕通知：方法执行之前、之后
@@ -41,7 +47,54 @@ public class WebLogAspect {
      */
     @Pointcut("execution(* com.bjsxt.controller.*.*(..))") // controller 包里面所有类，类里面的所有方法 都有该切面
     public void webLog(){}
+    /**
+     * 匹配API拦截
+     *
+     * @param joinPoint
+     */
+    @Before(value = "webLog()")
+    public void methodBefore(JoinPoint joinPoint) {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes();
+        HttpServletRequest request = requestAttributes.getRequest();
 
+        // 打印请求内容
+        log.info("===============请求内容===============");
+        log.info("请求地址:" + request.getRequestURL().toString());
+        log.info("请求方式:" + request.getMethod());
+        log.info("请求类方法:" + joinPoint.getSignature());
+        log.info("请求类方法参数:" + Arrays.toString(joinPoint.getArgs()));
+        log.info("===============请求内容===============");
+
+        JSONObject jsonObject = new JSONObject();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
+        jsonObject.put("request_time", df.format(new Date()));
+        jsonObject.put("request_url", request.getRequestURL().toString());
+        jsonObject.put("request_method", request.getMethod());
+        jsonObject.put("signature", joinPoint.getSignature());
+        jsonObject.put("request_args", Arrays.toString(joinPoint.getArgs()));
+        jsonObject.put("request_ip", IpUtil.getIpAddr(request));
+
+        JSONObject requestJsonObject = new JSONObject();
+        requestJsonObject.put("request", jsonObject);
+        kafkaSender.sendLogMessage(requestJsonObject);
+    }
+
+    // 在方法执行完结后打印返回内容
+    @AfterReturning(returning = "o", pointcut = "webLog()")
+    public void methodAfterReturing(Object o) {
+
+        log.info("--------------返回内容----------------");
+        log.info("Response内容:" + o.toString());
+        log.info("--------------返回内容----------------");
+        JSONObject respJSONObject = new JSONObject();
+        JSONObject jsonObject = new JSONObject();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
+        jsonObject.put("response_time", df.format(new Date()));
+        jsonObject.put("response_content", JSONObject.toJSONString(o));
+        respJSONObject.put("response", jsonObject);
+        kafkaSender.sendLogMessage(respJSONObject);
+    }
     /**
      * 2 记录日志的环绕通知
      */
