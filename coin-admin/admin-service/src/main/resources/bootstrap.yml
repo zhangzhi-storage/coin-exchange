@@ -18,4 +18,4 @@ spring:
         file-extension: yaml
 # 拉取的配置文件的dataID =  admin-service-dev.yaml
 kafka:
-  topic: admin_serivice_log
+  topic: kafka-admin-service-log

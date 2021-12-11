@@ -107,7 +107,7 @@ public class WebLogAdminAspect {
         sysUserLog.setGroup(webLog.getDescription());
       //  sysUserLog.setUserId(Long.valueOf(webLog.getUsername()));
         sysUserLog.setMethod(webLog.getMethod());
-        sysUserLog.setIp(sysUserLog.getIp());
+        sysUserLog.setIp(request.getRemoteAddr());
         sysUserLogService.save(sysUserLog);
         return result;
     }
